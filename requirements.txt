@@ -1,4 +1,7 @@
-flask
+﻿flask
 openai-whisper
 torch
-ffmpeg-pythonpython-dotenv
+ffmpeg-python
+python-dotenv
+gunicorn
+google-generativeai
