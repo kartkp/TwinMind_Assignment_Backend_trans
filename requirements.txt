@@ -1,4 +1,4 @@
 flask
 openai-whisper
 torch
-ffmpeg-python
+ffmpeg-pythonpython-dotenv

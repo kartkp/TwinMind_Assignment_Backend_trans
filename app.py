@@ -2,9 +2,15 @@ import google.generativeai as genai
 import os
 import json
 import logging
+from dotenv import load_dotenv
+from flask import Flask, request, jsonify
+
+load_dotenv()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+app = Flask(__name__)
 
 
 def get_model():
@@ -64,3 +70,31 @@ Content:
             "action_items": [],
             "key_points": []
         }
+
+
+@app.route("/", methods=["GET"])
+def home():
+    """API health check endpoint."""
+    return jsonify({"message": "Server is running!", "status": "ok"}), 200
+
+
+@app.route("/analyze", methods=["POST"])
+def analyze():
+    """Endpoint to analyze transcript."""
+    try:
+        data = request.get_json()
+        transcript = data.get("transcript", "")
+        
+        if not transcript:
+            return jsonify({"error": "Transcript is required"}), 400
+        
+        result = analyze_transcript(transcript)
+        return jsonify(result), 200
+    except Exception as e:
+        logger.error(f"Error in /analyze endpoint: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+if __name__ == "__main__":
+    logger.info("Starting Flask server on http://localhost:5000")
+    app.run(debug=True, host="0.0.0.0", port=5000)
